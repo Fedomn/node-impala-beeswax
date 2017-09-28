@@ -1,0 +1,22 @@
+{
+  "name": "node-impala-beeswax",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fedomn/node-impala-beeswax.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fedomn/node-impala-beeswax/issues"
+  },
+  "homepage": "https://github.com/Fedomn/node-impala-beeswax#readme",
+  "dependencies": {
+    "thrift": "^0.10.0"
+  }
+}
