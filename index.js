@@ -73,12 +73,13 @@ class ImpalaClient {
    * Gets the query plan for a query.
    *
    * @param sql {string}
+   * @param configuration {object} optional
    * @param callback {function}
    * @returns {function|promise}
    */
-  explain(sql, callback) {
+  explain(sql, configuration, callback) {
     const deferred = Q.defer();
-    const query = ImpalaClient.createQuery(sql);
+    const query = ImpalaClient.createQuery(sql, configuration);
     const client = this.client;
 
     if (!client) {
@@ -99,12 +100,13 @@ class ImpalaClient {
    * Gets the result metadata.
    *
    * @param sql {string}
+   * @param configuration {object} optional
    * @param callback {function}
    * @returns {function|promise}
    */
-  getResultsMetadata(sql, callback) {
+  getResultsMetadata(sql, configuration, callback) {
     const deferred = Q.defer();
-    const query = ImpalaClient.createQuery(sql);
+    const query = ImpalaClient.createQuery(sql, configuration);
     const client = this.client;
 
     if (!client) {
@@ -135,12 +137,13 @@ class ImpalaClient {
    * The query runs asynchronously.
    *
    * @param sql {string}
+   * @param configuration {object} optional
    * @param callback {function}
    * @returns {function|promise}
    */
-  query(sql, callback) {
+  query(sql, configuration, callback) {
     const deferred = Q.defer();
-    const query = ImpalaClient.createQuery(sql);
+    const query = ImpalaClient.createQuery(sql, configuration);
     const resultType = this.resultType;
     const client = this.client;
     const connection = this.connection;
@@ -195,15 +198,24 @@ class ImpalaClient {
  * Creates Beeswax type query object.
  *
  * @param sql {string} SQL statement as string or Beeswax query object.
+ * @param configuration {object} https://www.cloudera.com/documentation/enterprise/5-6-x/topics/impala_query_options.html#query_options
  * @returns {object}
  */
-ImpalaClient.createQuery = (sql) => {
+ImpalaClient.createQuery = (sql, configuration) => {
   if (sql instanceof types.Query) {
     return sql;
   }
-
-  // return new types.Query({ query: sql, configuration: ['batch_size=10000'] });
-  return new types.Query({ query: sql });
+  if (configuration) {
+    let buildConfigAry = [];
+    for (let prop in configuration) {
+      if (configuration.hasOwnProperty(prop)) {
+        buildConfigAry.push(`${prop}=${configuration[prop]}`);
+      }
+    }
+    return new types.Query({ query: sql, configuration: buildConfigAry });
+  } else {
+    return new types.Query({ query: sql });
+  }
 };
 
 /**
